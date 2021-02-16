@@ -1,0 +1,79 @@
+<html>
+    <head>
+        <!-- Support for iOS device sizes. -->
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no" />
+
+        <title>StriPDF</title>
+
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='common.css') }}" />
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}" />
+        <link rel="shortcut icon" href="{{ url_for('static', filename='icon.png') }}" />
+
+        <script type="text/javascript">
+            document.addEventListener("DOMContentLoaded", function(event) { init(); });
+
+            function init() {
+                // Drag and drop code adapted from http://www.sitepoint.com/html5-file-drag-and-drop/
+                if (window.File && window.FileList && window.FileReader) {
+                    var file_select = document.getElementById('file_field');
+                    var file_drop = document.getElementById('file-drop');
+                    var submit = document.getElementById('submit');
+
+                    file_select.addEventListener('change', fileSelectHandler, false);
+
+                    file_drop.addEventListener('dragover', fileDragHover, false);
+                    file_drop.addEventListener('dragleave', fileDragHover, false);
+                    file_drop.addEventListener('drop', fileSelectHandler, false);
+                }
+            }
+
+            function fileDragHover(e) {
+                e.stopPropagation();
+                e.preventDefault();
+                e.target.className = (e.type == 'dragover' ? 'hover' : '');
+            }
+
+            function fileSelectHandler(e) {
+                // Cancel event and hover styling.
+                fileDragHover(e);
+
+                // Fill the contents of the file selector with whatever was dropped (if anything).
+                var file_select = document.getElementById('file_field');
+                file_select.files = e.target.files || e.dataTransfer.files;
+
+                if (file_select.files.length > 1) {
+                    document.getElementById('messages').innerHTML += '<p>Only one file may be uploaded at a time.</p>';
+                } else {
+                    document.getElementById('form').submit()
+                }
+            }
+        </script>
+    </head>
+
+    <body>
+        <div id="title-bar"><div id="title">StriPDF</div></div>
+
+        <div id="content">
+            {% with messages = get_flashed_messages() %}
+            <div id="messages" class="messages">
+                {% if messages %}
+                {% for message in messages %}
+                <p>{{ message | safe }}</p>
+                {% endfor %}
+                {% endif %}
+            </div>
+            {% endwith %}
+
+            <form id="form" action="" method="POST" enctype="multipart/form-data">
+                {{ form.hidden_tag() }}
+
+                {{ form.file_field }}
+                <div id="file-drop">
+                    <p>Drop a PDF here to unlock write/print permissions.</p>
+                    <p>(The PDF must be readable without a password.)</p>
+                </div>
+            </form>
+        </div>
+    </body>
+</html>
+

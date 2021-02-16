@@ -1,0 +1,6 @@
+Flask>=1.0.0
+Flask-WTF==0.11
+Jinja2>=2.10.1
+Werkzeug==0.15.3
+WTForms==2.0.2
+pikepdf==2.5.2
