@@ -67,11 +67,11 @@
             <form id="form" action="" method="POST" enctype="multipart/form-data">
                 {{ form.hidden_tag() }}
 
-                {{ form.file_field }}
                 <div id="file-drop">
-                    <p>Drop a PDF here to unlock write/print permissions.</p>
-                    <p>(The PDF must be readable without a password.)</p>
+                    Drop a PDF here to unlock write/print permissions.
                 </div>
+
+                {{ form.file_field }}
             </form>
         </div>
     </body>
