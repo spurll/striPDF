@@ -1,6 +1,6 @@
 from os import path, listdir
 from io import BytesIO
-from tempfile import TemporaryFile
+from tempfile import TemporaryFile, mkstemp
 from string import ascii_letters, digits, punctuation
 from random import choice
 from flask import render_template, flash, session, send_file
@@ -26,15 +26,15 @@ def index():
             #try:
                 filename=form.file_field.data.filename
 
-                with TemporaryFile() as uploaded, TemporaryFile() as converted:
+                with TemporaryFile() as uploaded:
                     form.file_field.data.save(uploaded)
 
+                    converted, converted_path = mkstemp()
+
                     with Pdf.open(uploaded) as pdf:
-                        pdf.save(converted)
+                        pdf.save(converted_path)
 
-                    converted.seek(0)
-
-                    return send_file(converted,
+                    return send_file(converted_path,
                         as_attachment=True,
                         attachment_filename=filename,
                         mimetype='application/pdf')
