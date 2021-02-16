@@ -23,30 +23,24 @@ def index():
 
     if form.is_submitted():
         if form.validate_on_submit():
-            try:
+            #try:
                 filename=form.file_field.data.filename
 
-                # I would love to just do this:
-                #
-                #     with Pdf.open(form.file_field.data.stream) as pdf:
-                #
-                # Sadly, I have to use a tempfile, because of limitations with
-                # SpooledTemporaryFiles, which is what Flask uses for uploads
+                with TemporaryFile() as uploaded, TemporaryFile() as converted:
+                    form.file_field.data.save(uploaded)
 
-                with TemporaryFile() as file:
-                    form.file_field.data.save(file)
+                    with Pdf.open(uploaded) as pdf:
+                        pdf.save(converted)
 
-                    with Pdf.open(file) as pdf:
-                        buffer = BytesIO()
-                        pdf.save(buffer)
-                        buffer.seek(0)
+                    converted.seek(0)
 
-                        return send_file(buffer, as_attachment=True,
-                            attachment_filename=filename,
-                            mimetype='application/pdf')
+                    return send_file(converted,
+                        as_attachment=True,
+                        attachment_filename=filename,
+                        mimetype='application/pdf')
 
-            except Exception as e:
-                flash('An error occurred: {}'.format(e))
+            #except Exception as e:
+                #flash('An error occurred: {}'.format(e))
 
         else:
             flash_errors(form)
