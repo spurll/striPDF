@@ -12,6 +12,9 @@ from pikepdf import Pdf
 from stripdf import app
 
 
+TEMP_DIR = app.config.get('TEMP_DIR')
+
+
 class UploadForm(FlaskForm):
     file_field = FileField(validators=[Required()])
 
@@ -26,10 +29,10 @@ def index():
             try:
                 filename=form.file_field.data.filename
 
-                with TemporaryFile(dir=app.config.get('TEMP_DIR')) as uploaded:
+                with TemporaryFile(dir=TEMP_DIR) as uploaded:
                     form.file_field.data.save(uploaded)
 
-                    converted, converted_path = mkstemp()
+                    converted, converted_path = mkstemp(dir=TEMP_DIR)
 
                     with Pdf.open(uploaded) as pdf:
                         pdf.save(converted_path)
