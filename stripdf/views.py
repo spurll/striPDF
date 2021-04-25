@@ -23,10 +23,10 @@ def index():
 
     if form.is_submitted():
         if form.validate_on_submit():
-            #try:
+            try:
                 filename=form.file_field.data.filename
 
-                with TemporaryFile() as uploaded:
+                with TemporaryFile(dir=app.config.get('TEMP_DIR')) as uploaded:
                     form.file_field.data.save(uploaded)
 
                     converted, converted_path = mkstemp()
@@ -39,8 +39,8 @@ def index():
                         attachment_filename=filename,
                         mimetype='application/pdf')
 
-            #except Exception as e:
-                #flash('An error occurred: {}'.format(e))
+            except Exception as e:
+                flash('An error occurred: {}'.format(e))
 
         else:
             flash_errors(form)
