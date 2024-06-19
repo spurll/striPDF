@@ -6,7 +6,7 @@ from random import choice
 from flask import render_template, flash, session, send_file
 from flask_wtf import FlaskForm
 from wtforms.fields import FileField
-from wtforms.validators import Required, ValidationError
+from wtforms.validators import DataRequired, ValidationError
 from pikepdf import Pdf
 
 from stripdf import app
@@ -16,7 +16,7 @@ TEMP_DIR = app.config.get('TEMP_DIR')
 
 
 class UploadForm(FlaskForm):
-    file_field = FileField(validators=[Required()])
+    file_field = FileField(validators=[DataRequired()])
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -39,7 +39,7 @@ def index():
 
                     return send_file(converted_path,
                         as_attachment=True,
-                        attachment_filename=filename,
+                        download_name=filename,
                         mimetype='application/pdf')
 
             except Exception as e:

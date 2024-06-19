@@ -6,7 +6,6 @@ A web application that strips write and print protections from a readable PDF.
 
 ## Requirements
 
-* flask
 * flask-wtf
 * pikepdf
 
